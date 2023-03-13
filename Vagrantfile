@@ -4,28 +4,33 @@
 MACHINES = {
   :otuslinux => {
         :box_name => "centos/7",
-        :ip_addr => '192.168.11.101',
+        :ip_addr => '192.168.56.101',
 	:disks => {
 		:sata1 => {
-			:dfile => './sata1.vdi',
+			:dfile => '/tmp/sata1.vdi',
 			:size => 250,
 			:port => 1
 		},
 		:sata2 => {
-                        :dfile => './sata2.vdi',
+                        :dfile => '/tmp/sata2.vdi',
                         :size => 250, # Megabytes
 			:port => 2
 		},
                 :sata3 => {
-                        :dfile => './sata3.vdi',
+                        :dfile => '/tmp/sata3.vdi',
                         :size => 250,
                         :port => 3
                 },
                 :sata4 => {
-                        :dfile => './sata4.vdi',
+                        :dfile => '/tmp/sata4.vdi',
                         :size => 250, # Megabytes
                         :port => 4
-                }
+                },
+                :sata5 => {
+                        :dfile => '/tmp/sata5.vdi', # Путь, по которому будет создан файл диска
+                        :size => 250, # Размер диска в мегабайтах
+                        :port => 5 # Номер порта на который будет зацеплен диск
+                        }
 
 	}
 
@@ -34,7 +39,6 @@ MACHINES = {
 }
 
 Vagrant.configure("2") do |config|
-
   MACHINES.each do |boxname, boxconfig|
 
       config.vm.define boxname do |box|
@@ -68,6 +72,7 @@ Vagrant.configure("2") do |config|
               cp ~vagrant/.ssh/auth* ~root/.ssh
 	      yum install -y mdadm smartmontools hdparm gdisk
   	  SHELL
+          box.vm.provision "shell", path: "script.sh"
 
       end
   end
